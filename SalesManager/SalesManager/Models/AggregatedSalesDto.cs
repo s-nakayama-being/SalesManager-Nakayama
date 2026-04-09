@@ -31,6 +31,6 @@
         /// <summary>
         /// 発注要否
         /// </summary>
-        public bool FIsNeedsRestock { get; set; }
+        public bool FIsRestockNeeded { get; set; }
     }
 }
