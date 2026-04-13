@@ -20,28 +20,28 @@ namespace SalesManager.Data {
 
         private static readonly CsvConfiguration C_Config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture) {
             HasHeaderRecord = true,
-            PrepareHeaderForMatch = args => args.Header.ToLower()
+            PrepareHeaderForMatch = args => args.Header.ToLowerInvariant()
         };
 
         /// <summary>
         /// 店舗マスタデータの初期化
         /// </summary>
-        public static List<StoreModel> FStores { get; private set; } = new List<StoreModel>();
+        public static IReadOnlyList<StoreModel> FStores { get; private set; } = new List<StoreModel>();
 
         /// <summary>
         /// 商品マスタデータの初期化
         /// </summary>
-        public static List<ProductModel> FProducts { get; private set; } = new List<ProductModel>();
+        public static IReadOnlyList<ProductModel> FProducts { get; private set; } = new List<ProductModel>();
         
         /// <summary>
         /// 在庫データの初期化
         /// </summary>
-        public static List<InventoryModel> FInventories { get; private set; } = new List<InventoryModel>();
+        public static IReadOnlyList<InventoryModel> FInventories { get; private set; } = new List<InventoryModel>();
 
         /// <summary>
         /// 売上データの初期化
         /// </summary>
-        public static List<SaleModel> FSales { get; private set; } = new List<SaleModel>();
+        public static IReadOnlyList<SaleModel> FSales { get; private set; } = new List<SaleModel>();
 
         /// <summary>
         /// 指定されたフォルダ内の全対象ファイルを読み込み、各データモデルのリストに格納
@@ -50,10 +50,15 @@ namespace SalesManager.Data {
         /// <returns>非同期タスク</returns>
         public static async Task LoadAll(string vFolderPath) {
             await Task.Run(() => {
-                FStores = FetchFile<StoreModel>(vFolderPath, C_StoreConfig.C_FilePattern, C_StoreConfig.C_DisplayName);
-                FProducts = FetchFile<ProductModel>(vFolderPath, C_ProductConfig.C_FilePattern, C_ProductConfig.C_DisplayName);
-                FInventories = FetchFile<InventoryModel>(vFolderPath, C_InventoryConfig.C_FilePattern, C_InventoryConfig.C_DisplayName);
-                FSales = FetchFile<SaleModel>(vFolderPath, C_SaleConfig.C_FilePattern, C_SaleConfig.C_DisplayName);
+                var wStores = FetchFile<StoreModel>(vFolderPath, C_StoreConfig.C_FilePattern, C_StoreConfig.C_DisplayName);
+                var wProducts = FetchFile<ProductModel>(vFolderPath, C_ProductConfig.C_FilePattern, C_ProductConfig.C_DisplayName);
+                var wInventories = FetchFile<InventoryModel>(vFolderPath, C_InventoryConfig.C_FilePattern, C_InventoryConfig.C_DisplayName);
+                var wSales = FetchFile<SaleModel>(vFolderPath, C_SaleConfig.C_FilePattern, C_SaleConfig.C_DisplayName);
+
+                FStores = wStores;
+                FProducts = wProducts;
+                FInventories = wInventories;
+                FSales = wSales;
             });
         }
 
@@ -71,13 +76,16 @@ namespace SalesManager.Data {
 
                 return wResult;
 
+            } catch (FileNotFoundException) {
+                throw;
+
             } catch (DirectoryNotFoundException) {
                 throw new DirectoryNotFoundException($"指定されたフォルダが見つかりません。パスを確認してください。");
 
             } catch (UnauthorizedAccessException) {
                 throw new UnauthorizedAccessException($"{vDisplayName}へのアクセス権限がありません。ファイルのアクセス権限を確認してください。");
 
-            } catch (IOException ex) when (!ex.Message.Contains("ファイルが見つかりません")) {
+            } catch (IOException) {
                 throw new IOException($"{vDisplayName}が他のプログラムで開かれています。ファイルを閉じてから再度実行してください。");
 
             } catch (CsvHelperException) {
