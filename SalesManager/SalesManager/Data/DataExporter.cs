@@ -28,7 +28,7 @@ namespace SalesManager.Data {
             var wAggregatedSalesPath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vPeriodString}.csv");
             WriteCsv(wAggregatedSalesPath, vResultList);
 
-            var wRestockList = vResultList.Where(x => x.FIsRestockNeeded).ToList();
+            var wRestockList = vResultList.Where(x => x.IsRestockNeeded).ToList();
             if (wRestockList.Any()) {
                 var wRestockListPath = Path.Combine(vOutputFolderPath, $"RestockList_{vPeriodString}.csv");
                 WriteCsv(wRestockListPath, wRestockList);

@@ -6,11 +6,11 @@
         /// <summary>
         /// 店舗ID
         /// </summary>
-        public int FStoreId { get; set; }
+        public int StoreId { get; set; }
 
         /// <summary>
         /// 店舗名
         /// </summary>
-        public string FStoreName { get; set; }
+        public string StoreName { get; set; }
     }
 }

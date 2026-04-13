@@ -39,7 +39,7 @@ namespace SalesManager.Services {
 
             var wEndDate = vStartDate.AddDays(C_TargetPeriodDays - 1);
 
-            var wHasInvalidDate = vSales.Any(x => x.FSaleDate < vStartDate || x.FSaleDate > wEndDate);
+            var wHasInvalidDate = vSales.Any(x => x.SaleDate < vStartDate || x.SaleDate > wEndDate);
 
             if (wHasInvalidDate)
                 throw new InvalidDataException($"売上データの中に、期間外の日付が含まれています。データの内容を確認してください。期間は{vStartDate:yyyy/MM/dd}から{wEndDate:yyyy/MM/dd}までです。");
