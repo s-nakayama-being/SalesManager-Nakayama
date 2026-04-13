@@ -6,21 +6,21 @@
         /// <summary>
         /// 商品ID
         /// </summary>
-        public int FProductId { get; set; }
+        public int ProductId { get; set; }
 
         /// <summary>
         /// 商品名
         /// </summary>
-        public string FProductName { get; set; }
+        public string ProductName { get; set; }
 
         /// <summary>
         /// 単価
         /// </summary>
-        public decimal FUnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
 
         /// <summary>
         /// カテゴリー
         /// </summary>
-        public string FCategory { get; set; }
+        public string Category { get; set; }
     }
 }

@@ -2,13 +2,12 @@
 using System.Linq;
 using SalesManager.Models;
 
-namespace SalesManager.Business {
+namespace SalesManager.Services {
     /// <summary>
     /// 各種データを統合し、集計結果を生成するクラス
     /// </summary>
     public class SalesAggregator {
-
-        private readonly int FRestockThreshold = 5;
+        private static readonly int C_RestockThreshold = 5;
 
         /// <summary>
         /// 売上データを各種モデルと結合し、集計結果のDTOリストを生成するメソッド
@@ -24,18 +23,18 @@ namespace SalesManager.Business {
             IReadOnlyList<ProductModel> vProducts,
             IReadOnlyList<InventoryModel> vInventories) {
 
-            var wStoreDict = vStores.ToDictionary(x => x.FStoreId);
-            var wProductDict = vProducts.ToDictionary(x => x.FProductId);
-            var wInventoryDict = vInventories.ToDictionary(x => (x.FStoreId, x.FProductId));
+            var wStoreDict = vStores.ToDictionary(x => x.StoreId);
+            var wProductDict = vProducts.ToDictionary(x => x.ProductId);
+            var wInventoryDict = vInventories.ToDictionary(x => (x.StoreId, x.ProductId));
 
             var wResultList = new List<AggregatedSalesDto>();
 
             var wGroupedSales = vSales
-                .GroupBy(x => (x.FStoreId, x.FProductId))
+                .GroupBy(x => (x.StoreId, x.ProductId))
                 .Select(y => (
-                    y.Key.FStoreId,
-                    y.Key.FProductId,
-                    y.Sum(x => x.FQuantity)
+                    y.Key.StoreId,
+                    y.Key.ProductId,
+                    TotalQuantity: y.Sum(x => x.Quantity)
                 ));
 
             foreach (var wSale in wGroupedSales) {
@@ -48,15 +47,15 @@ namespace SalesManager.Business {
         }
 
         private bool TryGetMasterData(
-            (int FStoreId, int FProductId, int FTotalQuantity) vSale,
+            (int StoreId, int ProductId, int TotalQuantity) vSale,
             Dictionary<int, StoreModel> vStoreDict,
             Dictionary<int, ProductModel> vProductDict,
             Dictionary<(int, int), InventoryModel> vInventoryDict,
             out (StoreModel Store, ProductModel Product, InventoryModel Inventory) vData) {
 
-            if (vStoreDict.TryGetValue(vSale.FStoreId, out var wStore) &&
-                vProductDict.TryGetValue(vSale.FProductId, out var wProduct) &&
-                vInventoryDict.TryGetValue((vSale.FStoreId, vSale.FProductId), out var wInventory)) {
+            if (vStoreDict.TryGetValue(vSale.StoreId, out var wStore) &&
+                vProductDict.TryGetValue(vSale.ProductId, out var wProduct) &&
+                vInventoryDict.TryGetValue((vSale.StoreId, vSale.ProductId), out var wInventory)) {
 
                 vData = (wStore, wProduct, wInventory);
                 return true;
@@ -67,18 +66,18 @@ namespace SalesManager.Business {
         }
 
         private AggregatedSalesDto CreateDto(
-            (int FStoreId, int FProductId, int FTotalQuantity) vSale,
+            (int StoreId, int ProductId, int TotalQuantity) vSale,
             (StoreModel Store, ProductModel Product, InventoryModel Inventory) vLinkedData) {
 
-            var wRemaining = vLinkedData.Inventory.FStock - vSale.FTotalQuantity;
+            var wRemaining = vLinkedData.Inventory.Stock - vSale.TotalQuantity;
 
             return new AggregatedSalesDto {
-                FStoreName = vLinkedData.Store.FStoreName,
-                FProductName = vLinkedData.Product.FProductName,
-                FTotalSoldQuantity = vSale.FTotalQuantity,
-                FTotalSalesAmount = (decimal)(vSale.FTotalQuantity * vLinkedData.Product.FUnitPrice),
-                FRemainingInventory = wRemaining,
-                FIsRestockNeeded = wRemaining <= FRestockThreshold
+                StoreName = vLinkedData.Store.StoreName,
+                ProductName = vLinkedData.Product.ProductName,
+                TotalSoldQuantity = vSale.TotalQuantity,
+                TotalSalesAmount = vSale.TotalQuantity * vLinkedData.Product.UnitPrice,
+                RemainingInventory = wRemaining,
+                IsRestockNeeded = wRemaining <= C_RestockThreshold
             };
         }
     }

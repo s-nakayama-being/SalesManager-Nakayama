@@ -6,16 +6,16 @@
         /// <summary>
         /// 店舗ID
         /// </summary>
-        public int FStoreId { get; set; }
+        public int StoreId { get; set; }
 
         /// <summary>
         /// 商品ID
         /// </summary>
-        public int FProductId { get; set; }
+        public int ProductId { get; set; }
 
         /// <summary>
         /// 在庫数量
         /// </summary>
-        public int FStock { get; set; }
+        public int Stock { get; set; }
     }
 }
