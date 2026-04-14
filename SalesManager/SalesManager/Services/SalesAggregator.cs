@@ -72,12 +72,14 @@ namespace SalesManager.Services {
             var wRemaining = vLinkedData.Inventory.Stock - vSale.TotalQuantity;
 
             return new AggregatedSalesDto {
-                StoreName = vLinkedData.Store.StoreName,
+                ProductId = vSale.ProductId,
                 ProductName = vLinkedData.Product.ProductName,
                 TotalSoldQuantity = vSale.TotalQuantity,
-                TotalSalesAmount = vSale.TotalQuantity * vLinkedData.Product.UnitPrice,
+                CurrentInventory = vLinkedData.Inventory.Stock,
                 RemainingInventory = wRemaining,
-                IsRestockNeeded = wRemaining <= C_RestockThreshold
+                IsRestockNeeded = wRemaining <= C_RestockThreshold,
+                TotalSalesAmount = vSale.TotalQuantity * vLinkedData.Product.UnitPrice,
+
             };
         }
     }
