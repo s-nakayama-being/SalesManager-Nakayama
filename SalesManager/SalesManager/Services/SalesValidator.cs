@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using SalesManager.Models;
@@ -9,7 +10,7 @@ namespace SalesManager.Services {
     /// 売上データの妥当性を検証するクラス
     /// </summary>
     public static class SalesValidator {
-        private const int C_TargetPeriodDays = 7;
+        private static readonly int C_TargetPeriodDays = 7;
 
         /// <summary>
         /// ファイル名から基準日を解析
@@ -19,8 +20,9 @@ namespace SalesManager.Services {
         public static DateTime ParseStartDate(string vFileName) {
             var wFileName = Path.GetFileNameWithoutExtension(vFileName);
             var wParts = wFileName.Split('_');
+            var wDateToken = wParts.LastOrDefault();
 
-            if (wParts.Length < 2 || !DateTime.TryParseExact(wParts[1], "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var wStartDate))
+            if (!DateTime.TryParseExact(wDateToken, "yyyyMMdd", null, DateTimeStyles.None, out var wStartDate))
                 throw new InvalidDataException($"ファイル名({vFileName})から開始日を解析できませんでした。ファイル名の形式を確認してください。");
 
             if (wStartDate > DateTime.Today)
@@ -39,7 +41,7 @@ namespace SalesManager.Services {
 
             var wEndDate = vStartDate.AddDays(C_TargetPeriodDays - 1);
 
-            var wHasInvalidDate = vSales.Any(x => x.SaleDate < vStartDate || x.SaleDate > wEndDate);
+            var wHasInvalidDate = vSales.Any(x => x.SaleDate.Date < vStartDate.Date || x.SaleDate.Date > wEndDate.Date);
 
             if (wHasInvalidDate)
                 throw new InvalidDataException($"売上データの中に、期間外の日付が含まれています。データの内容を確認してください。期間は{vStartDate:yyyy/MM/dd}から{wEndDate:yyyy/MM/dd}までです。");

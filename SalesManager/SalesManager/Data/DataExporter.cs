@@ -9,9 +9,9 @@ using SalesManager.Models;
 
 namespace SalesManager.Data {
     /// <summary>
-    /// 集計結果等のデータをCSVファイルとして出力するクラス
+    /// 集計結果等のデータを外部ファイルとして出力するクラス
     /// </summary>
-    public class DataExporter {
+    public static class DataExporter {
         /// <summary>
         /// 集計結果および発注候補リストを指定されたフォルダにファイル出力
         /// </summary>
@@ -19,11 +19,11 @@ namespace SalesManager.Data {
         /// <param name="vPeriodString">対象期間</param>
         /// <param name="vOutputFolderPath">出力先のフォルダパス</param>
         public static void Export(
-            List<AggregatedSalesDto> vResultList,
+            List<AggregatedSalesModel> vResultList,
             string vPeriodString,
             string vOutputFolderPath) {
 
-            if (!Directory.Exists(vOutputFolderPath)) Directory.CreateDirectory(vOutputFolderPath);
+            Directory.CreateDirectory(vOutputFolderPath);
 
             var wAggregatedSalesPath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vPeriodString}.csv");
             WriteCsv(wAggregatedSalesPath, vResultList);

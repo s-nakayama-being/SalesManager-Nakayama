@@ -2,7 +2,7 @@
     /// <summary>
     /// 売上データを集計して保持するクラス
     /// </summary>
-    public class AggregatedSalesDto {
+    public class AggregatedSalesModel {
         /// <summary>
         /// 店舗名
         /// </summary>

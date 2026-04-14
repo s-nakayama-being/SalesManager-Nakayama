@@ -17,7 +17,7 @@ namespace SalesManager.Services {
         /// <param name="vProducts">商品データのリスト</param>
         /// <param name="vInventories">在庫データのリスト</param>
         /// <returns>集計結果</returns>
-        public List<AggregatedSalesDto> Aggregate(
+        public List<AggregatedSalesModel> Aggregate(
             IReadOnlyList<SaleModel> vSales,
             IReadOnlyList<StoreModel> vStores,
             IReadOnlyList<ProductModel> vProducts,
@@ -27,7 +27,7 @@ namespace SalesManager.Services {
             var wProductDict = vProducts.ToDictionary(x => x.ProductId);
             var wInventoryDict = vInventories.ToDictionary(x => (x.StoreId, x.ProductId));
 
-            var wResultList = new List<AggregatedSalesDto>();
+            var wResultList = new List<AggregatedSalesModel>();
 
             var wGroupedSales = vSales
                 .GroupBy(x => (x.StoreId, x.ProductId))
@@ -65,13 +65,13 @@ namespace SalesManager.Services {
             return false;
         }
 
-        private AggregatedSalesDto CreateDto(
+        private AggregatedSalesModel CreateDto(
             (int StoreId, int ProductId, int TotalQuantity) vSale,
             (StoreModel Store, ProductModel Product, InventoryModel Inventory) vLinkedData) {
 
             var wRemaining = vLinkedData.Inventory.Stock - vSale.TotalQuantity;
 
-            return new AggregatedSalesDto {
+            return new AggregatedSalesModel {
                 StoreName = vLinkedData.Store.StoreName,
                 ProductName = vLinkedData.Product.ProductName,
                 TotalSoldQuantity = vSale.TotalQuantity,
