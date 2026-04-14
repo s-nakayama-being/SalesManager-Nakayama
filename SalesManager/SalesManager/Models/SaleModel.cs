@@ -8,21 +8,21 @@ namespace SalesManager.Models {
         /// <summary>
         /// 売上日
         /// </summary>
-        public DateTime FSaleDate { get; set; }
+        public DateTime SaleDate { get; set; }
 
         /// <summary>
         /// 店舗ID
         /// </summary>
-        public int FStoreId { get; set; }
+        public int StoreId { get; set; }
 
         /// <summary>
         /// 商品ID
         /// </summary>
-        public int FProductId { get; set; }
+        public int ProductId { get; set; }
 
         /// <summary>
         /// 売上数量
         /// </summary>
-        public int FQuantity { get; set; }
+        public int Quantity { get; set; }
     }
 }

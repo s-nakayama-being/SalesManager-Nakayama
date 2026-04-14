@@ -26,22 +26,22 @@ namespace SalesManager.Data {
         /// <summary>
         /// 店舗マスタデータの初期化
         /// </summary>
-        public static IReadOnlyList<StoreModel> FStores { get; private set; } = new List<StoreModel>();
+        public static IReadOnlyList<StoreModel> Stores { get; private set; } = new List<StoreModel>();
 
         /// <summary>
         /// 商品マスタデータの初期化
         /// </summary>
-        public static IReadOnlyList<ProductModel> FProducts { get; private set; } = new List<ProductModel>();
+        public static IReadOnlyList<ProductModel> Products { get; private set; } = new List<ProductModel>();
         
         /// <summary>
         /// 在庫データの初期化
         /// </summary>
-        public static IReadOnlyList<InventoryModel> FInventories { get; private set; } = new List<InventoryModel>();
+        public static IReadOnlyList<InventoryModel> Inventories { get; private set; } = new List<InventoryModel>();
 
         /// <summary>
         /// 売上データの初期化
         /// </summary>
-        public static IReadOnlyList<SaleModel> FSales { get; private set; } = new List<SaleModel>();
+        public static IReadOnlyList<SaleModel> Sales { get; private set; } = new List<SaleModel>();
 
         /// <summary>
         /// 指定されたフォルダ内の全対象ファイルを読み込み、各データモデルのリストに格納
@@ -55,10 +55,10 @@ namespace SalesManager.Data {
                 var wInventories = FetchFile<InventoryModel>(vFolderPath, C_InventoryConfig.C_FilePattern, C_InventoryConfig.C_DisplayName);
                 var wSales = FetchFile<SaleModel>(vFolderPath, C_SaleConfig.C_FilePattern, C_SaleConfig.C_DisplayName);
 
-                FStores = wStores;
-                FProducts = wProducts;
-                FInventories = wInventories;
-                FSales = wSales;
+                Stores = wStores;
+                Products = wProducts;
+                Inventories = wInventories;
+                Sales = wSales;
             });
         }
 
@@ -96,20 +96,7 @@ namespace SalesManager.Data {
         private static List<T> ReadCsv<T>(string vFilePath) {
             using (var wReader = new StreamReader(vFilePath, Encoding.UTF8))
             using (var wCsv = new CsvReader(wReader, C_Config)) {
-                wCsv.Context.RegisterClassMap<PreFixRemovingMap<T>>();
                 return wCsv.GetRecords<T>().ToList();
-            }
-        }
-
-        private class PreFixRemovingMap<T> : ClassMap<T> {
-            public PreFixRemovingMap() {
-                AutoMap(System.Globalization.CultureInfo.InvariantCulture);
-
-                foreach (var wMap in MemberMaps) {
-                    string wPropName = wMap.Data.Member.Name;
-
-                    if (wPropName.StartsWith("F") && wPropName.Length > 1) wMap.Name(wPropName.Substring(1));
-                }
             }
         }
     }
