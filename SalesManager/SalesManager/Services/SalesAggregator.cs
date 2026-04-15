@@ -10,7 +10,7 @@ namespace SalesManager.Services {
         private static readonly int C_RestockThreshold = 5;
 
         /// <summary>
-        /// 売上データを各種モデルと結合し、集計結果のDTOリストを生成するメソッド
+        /// 売上データを各種モデルと結合し、集計結果のリストを生成するメソッド
         /// </summary>
         /// <param name="vSales">売上データのリスト</param>
         /// <param name="vStores">店舗データのリスト</param>
@@ -40,7 +40,7 @@ namespace SalesManager.Services {
             foreach (var wSale in wGroupedSales) {
                 if (!TryGetMasterData(wSale, wStoreDict, wProductDict, wInventoryDict, out var wLinkedData)) continue;
 
-                wResultList.Add(CreateDto(wSale, wLinkedData));
+                wResultList.Add(CreateModel(wSale, wLinkedData));
             }
 
             return wResultList;
@@ -65,7 +65,7 @@ namespace SalesManager.Services {
             return false;
         }
 
-        private AggregatedSalesModel CreateDto(
+        private AggregatedSalesModel CreateModel(
             (int StoreId, int ProductId, int TotalQuantity) vSale,
             (StoreModel Store, ProductModel Product, InventoryModel Inventory) vLinkedData) {
 
