@@ -29,13 +29,16 @@ namespace SalesManager.Services {
         public static DateTime ParseStartDate(string vFileName) {
             var wFileName = Path.GetFileNameWithoutExtension(vFileName);
             var wParts = wFileName.Split('_');
+
+            if (wParts.Length < 2) throw new InvalidDataException($"ファイル名({vFileName})の形式が不正です。ファイル名の形式を確認してください。");
+
             var wDateToken = wParts.LastOrDefault();
 
             if (!DateTime.TryParseExact(wDateToken, "yyyyMMdd", null, DateTimeStyles.None, out var wStartDate))
                 throw new InvalidDataException($"ファイル名({vFileName})から開始日を解析できませんでした。ファイル名の形式を確認してください。");
 
             if (wStartDate > DateTime.Today)
-                throw new InvalidDataException($"ファイル名({vFileName})から解析された開始日({wStartDate:yyyy/MM/dd})は未来の日付です。ファイル名の形式を確認してください。");
+                throw new InvalidDataException($"ファイル名({vFileName})から解析された開始日({wStartDate:yyyyMMdd})は未来の日付です。ファイル名の形式を確認してください。");
 
             return wStartDate;
         }

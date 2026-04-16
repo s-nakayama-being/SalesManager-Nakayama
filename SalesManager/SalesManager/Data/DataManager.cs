@@ -46,21 +46,6 @@ namespace SalesManager.Data {
         /// </summary>
         public static IReadOnlyList<SaleModel> Sales { get; private set; } = new List<SaleModel>();
 
-        /// <summary>
-        /// 読込んだ売上データのファイル名
-        /// </summary>
-        public static string ReadSalesFileName { get; private set; } = string.Empty;
-
-        /// <summary>
-        /// 読込データのフォルダパス
-        /// </summary>
-        public static string ReadDataFolderPath { get; private set; } = string.Empty;
-
-        /// <summary>
-        /// 読込んだ売上データの対象期間
-        /// </summary>
-        public static string ReadSalesTargetPeriod { get; private set; } = string.Empty;
-
         #endregion
 
         #region publicメソッド
@@ -70,25 +55,30 @@ namespace SalesManager.Data {
         /// </summary>
         /// <param name="vFolderPath">対象ファイルが配置されているフォルダパス</param>
         /// <returns>非同期タスク</returns>
-        public static async Task LoadAll(string vFolderPath) {
-            await Task.Run(() => {
-                var wStores = FetchFile<StoreModel>(vFolderPath, C_StoreConfig.C_FilePattern, C_StoreConfig.C_DisplayName);
-                var wProducts = FetchFile<ProductModel>(vFolderPath, C_ProductConfig.C_FilePattern, C_ProductConfig.C_DisplayName);
-                var wInventories = FetchFile<InventoryModel>(vFolderPath, C_InventoryConfig.C_FilePattern, C_InventoryConfig.C_DisplayName);
-                var wSales = FetchFile<SaleModel>(vFolderPath, C_SaleConfig.C_FilePattern, C_SaleConfig.C_DisplayName);
+        public static async Task<(string FFileName, string FPeriod)> LoadAll(string vFolderPath) {
+            return await Task.Run(() => {
+                var wStoreFilePath = GetFilePath(vFolderPath, C_StoreConfig.C_FilePattern, C_StoreConfig.C_DisplayName);
+                var wProductFilePath = GetFilePath(vFolderPath, C_ProductConfig.C_FilePattern, C_ProductConfig.C_DisplayName);
+                var wInventoryFilePath = GetFilePath(vFolderPath, C_InventoryConfig.C_FilePattern, C_InventoryConfig.C_DisplayName);
+                var wSaleFilePath = GetFilePath(vFolderPath, C_SaleConfig.C_FilePattern, C_SaleConfig.C_DisplayName);
 
-                var wSalesFiles = Directory.GetFiles(vFolderPath, C_SaleConfig.C_FilePattern);
-                var wStartDate = SalesValidator.ParseStartDate(wSalesFiles.Single());
+                var wSalesFileName = Path.GetFileName(wSaleFilePath);
+                var wStartDate = SalesValidator.ParseStartDate(wSalesFileName);
+                var wTargetPeriod = $"{wStartDate:yyyyMMdd}_{(wStartDate.AddDays(SalesValidator.C_TargetPeriodDays - 1)):yyyyMMdd}";
+
+                var wStore = ReadCsv<StoreModel>(wStoreFilePath, C_StoreConfig.C_DisplayName);
+                var wProduct = ReadCsv<ProductModel>(wProductFilePath, C_ProductConfig.C_DisplayName);
+                var wInventories = ReadCsv<InventoryModel>(wInventoryFilePath, C_InventoryConfig.C_DisplayName);
+                var wSales = ReadCsv<SaleModel>(wSaleFilePath, C_SaleConfig.C_DisplayName);
+
                 SalesValidator.EnsureWithinRange(wSales, wStartDate);
 
-                ReadSalesFileName = Path.GetFileName(wSalesFiles.Single());
-                ReadDataFolderPath = vFolderPath;
-                ReadSalesTargetPeriod = $"{wStartDate:yyyy/MM/dd}_{(wStartDate.AddDays(SalesValidator.C_TargetPeriodDays - 1)):yyyy/MM/dd}";
-
-                Stores = wStores;
-                Products = wProducts;
+                Stores = wStore;
+                Products = wProduct;
                 Inventories = wInventories;
                 Sales = wSales;
+
+                return (FFileName: wSalesFileName, FPeriod: wTargetPeriod);
             });
         }
 
@@ -96,41 +86,34 @@ namespace SalesManager.Data {
 
         #region privateメソッド
 
-        private static List<T> FetchFile<T>(string vFolderPath, string vFilePattern, string vDisplayName) {
+        private static string GetFilePath(string vFolderPath, string vFilePattern, string vDisplay) {
             try {
                 var wFiles = Directory.GetFiles(vFolderPath, vFilePattern);
 
-                if (wFiles.Length == 0) throw new FileNotFoundException($"{vDisplayName}が見つかりません。指定されたフォルダにファイルが存在するか確認してください。");
-
-                if (wFiles.Length > 1) throw new InvalidDataException($"{vDisplayName}が複数見つかりました。処理対象が特定できないため、フォルダ内には対象ファイルのみ配置してください。");
-
-                var wResult = ReadCsv<T>(wFiles.Single());
-
-                if (wResult.Count == 0) throw new InvalidDataException($"{vDisplayName}にデータが存在しません。ファイルの内容を確認してください。");
-
-                return wResult;
-
+                if (!wFiles.Any()) throw new FileNotFoundException($"{vDisplay}が見つかりません。指定されたフォルダにファイルが存在するか確認してください。");
+                if (wFiles.Length > 1) throw new InvalidDataException($"{vDisplay}が複数見つかりました。処理対象が特定できないため、フォルダ内には対象ファイルのみ配置してください。");
+                return wFiles.Single();
             } catch (FileNotFoundException) {
                 throw;
-
             } catch (DirectoryNotFoundException) {
                 throw new DirectoryNotFoundException($"指定されたフォルダが見つかりません。パスを確認してください。");
-
-            } catch (UnauthorizedAccessException) {
-                throw new UnauthorizedAccessException($"{vDisplayName}へのアクセス権限がありません。ファイルのアクセス権限を確認してください。");
-
-            } catch (IOException) {
-                throw new IOException($"{vDisplayName}が他のプログラムで開かれています。ファイルを閉じてから再度実行してください。");
-
-            } catch (CsvHelperException) {
-                throw new InvalidDataException($"{vDisplayName}のデータ形式に誤りがあります。ファイルの内容を確認してください。");
             }
         }
 
-        private static List<T> ReadCsv<T>(string vFilePath) {
-            using (var wReader = new StreamReader(vFilePath, Encoding.UTF8))
-            using (var wCsv = new CsvReader(wReader, C_Config)) {
-                return wCsv.GetRecords<T>().ToList();
+        private static List<T> ReadCsv<T>(string vFilePath, string vDisplayName) {
+            try {
+                using (var wReader = new StreamReader(vFilePath, Encoding.UTF8))
+                using (var wCsv = new CsvReader(wReader, C_Config)) {
+                    var wResult = wCsv.GetRecords<T>().ToList();
+                    if (!wResult.Any()) throw new InvalidDataException($"{vDisplayName}にデータが存在しません。ファイルの内容を確認してください。");
+                    return wResult;
+                }
+            } catch (UnauthorizedAccessException) {
+                throw new UnauthorizedAccessException($"{vDisplayName}へのアクセス権限がありません。ファイルのアクセス権限を確認してください。");
+            } catch (IOException) {
+                throw new IOException($"{vDisplayName}が他のプログラムで開かれています。ファイルを閉じてから再度実行してください。");
+            } catch (CsvHelperException) {
+                throw new InvalidDataException($"{vDisplayName}の形式が正しくありません。ファイルの内容を確認してください。");
             }
         }
 

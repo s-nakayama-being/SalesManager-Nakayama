@@ -46,12 +46,11 @@ namespace SalesManager.Services {
                     TotalSoldQuantity = wTotalSoldQuantity,
                     CurrentInventory = wCurrentInventory,
                     RemainingInventory = wRemainingInventory,
-                    IsRestockNeeded = wRemainingInventory < C_RestockThreshold,
+                    IsRestockNeeded = wRemainingInventory <= C_RestockThreshold,
                     TotalSalesAmount = wTotalSoldQuantity * wProduct.UnitPrice
                 });
             }
-
-            return wResultList;
+            return wResultList.OrderBy(x => x.ProductId).ToList();
         }
 
         #endregion

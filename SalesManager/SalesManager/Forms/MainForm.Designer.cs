@@ -6,7 +6,6 @@
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.MenuStrip FMenuStripMain;
         private System.Windows.Forms.ToolStripMenuItem FFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem FEditToolStripMenuItem;
         private System.Windows.Forms.GroupBox FGrpProcessInfo;
         private System.Windows.Forms.Label FLblTargetFile;
         private System.Windows.Forms.Label FLblInputFolder;
@@ -53,7 +52,8 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.FMenuStripMain = new System.Windows.Forms.MenuStrip();
             this.FFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.FEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FTsmiExport = new System.Windows.Forms.ToolStripMenuItem();
+            this.FTsmiLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.FGrpProcessInfo = new System.Windows.Forms.GroupBox();
             this.FLblTargetPeriod = new System.Windows.Forms.Label();
             this.FLblTargetFile = new System.Windows.Forms.Label();
@@ -82,8 +82,7 @@
             // FMenuStripMain
             // 
             this.FMenuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FFileToolStripMenuItem,
-            this.FEditToolStripMenuItem});
+            this.FFileToolStripMenuItem});
             this.FMenuStripMain.Location = new System.Drawing.Point(0, 0);
             this.FMenuStripMain.Name = "FMenuStripMain";
             this.FMenuStripMain.Size = new System.Drawing.Size(984, 24);
@@ -92,15 +91,26 @@
             // 
             // FFileToolStripMenuItem
             // 
+            this.FFileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FTsmiExport,
+            this.FTsmiLoad});
             this.FFileToolStripMenuItem.Name = "FFileToolStripMenuItem";
             this.FFileToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.FFileToolStripMenuItem.Text = "ファイル(&F)";
             // 
-            // FEditToolStripMenuItem
+            // FTsmiExport
             // 
-            this.FEditToolStripMenuItem.Name = "FEditToolStripMenuItem";
-            this.FEditToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
-            this.FEditToolStripMenuItem.Text = "編集(&E)";
+            this.FTsmiExport.Name = "FTsmiExport";
+            this.FTsmiExport.Size = new System.Drawing.Size(180, 22);
+            this.FTsmiExport.Text = "再読込(&L)";
+            this.FTsmiExport.Click += new System.EventHandler(this.FTsmiExport_Click);
+            // 
+            // FTsmiLoad
+            // 
+            this.FTsmiLoad.Name = "FTsmiLoad";
+            this.FTsmiLoad.Size = new System.Drawing.Size(180, 22);
+            this.FTsmiLoad.Text = "出力(&E)";
+            this.FTsmiLoad.Click += new System.EventHandler(this.FTsmiLoad_Click);
             // 
             // FGrpProcessInfo
             // 
@@ -350,6 +360,8 @@
 
         #endregion
 
+        private System.Windows.Forms.ToolStripMenuItem FTsmiExport;
+        private System.Windows.Forms.ToolStripMenuItem FTsmiLoad;
     }
 }
 

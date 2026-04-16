@@ -27,19 +27,30 @@ namespace SalesManager.Data {
 
             Directory.CreateDirectory(vOutputFolderPath);
 
-            var wAggregatedSalesPath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vPeriodString}.csv");
-            WriteCsv(wAggregatedSalesPath, vResultList);
+            ExportAggregatedSales(vResultList, vPeriodString, vOutputFolderPath);
 
-            var wRestockList = vResultList.Where(x => x.IsRestockNeeded).ToList();
-            if (wRestockList.Any()) {
-                var wRestockListPath = Path.Combine(vOutputFolderPath, $"RestockList_{vPeriodString}.csv");
-                WriteCsv(wRestockListPath, wRestockList);
-            }
+            ExportRestockList(vResultList, vPeriodString, vOutputFolderPath);
         }
 
         #endregion
 
         #region privateメソッド
+
+        private static void ExportAggregatedSales(List<AggregatedSalesModel> vResultList, string vPeriodString, string vOutputFolderPath) {
+            var wFilePath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vPeriodString}.csv");
+
+            WriteCsv(wFilePath, vResultList);
+        }
+
+        private static void ExportRestockList(List<AggregatedSalesModel> vResultList, string vPeriodString, string vOutputFolderPath) {
+            var wRestockList = vResultList.Where(x => x.IsRestockNeeded).ToList();
+
+            if (!wRestockList.Any()) return;
+
+            var wFilePath = Path.Combine(vOutputFolderPath, $"RestockList_{vPeriodString}.csv");
+
+            WriteCsv(wFilePath, wRestockList);
+        }
 
         private static void WriteCsv<T>(string vFilePath, List<T> vData) {
             var wConfig = new CsvConfiguration(CultureInfo.InvariantCulture) {

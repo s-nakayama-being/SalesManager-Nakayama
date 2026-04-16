@@ -1,13 +1,13 @@
-﻿using SalesManager.Data;
-using SalesManager.Models;
-using SalesManager.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Linq.Expressions;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SalesManager.Data;
+using SalesManager.Models;
+using SalesManager.Services;
 
 namespace SalesManager {
     public partial class MainForm : Form {
@@ -22,12 +22,40 @@ namespace SalesManager {
 
         #region UI操作
 
-        private async Task LoadData(string vFolderPath) {
+        private async Task RefreshData() {
+            try {
+                FBtnRefresh.Enabled = false;
+                FBtnExport.Enabled = false;
+                FLblStatus.Text = "データ読み込み中...";
+
+                var wInputFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, C_InputFolderName);
+
+                var (wSalesFileName, wTargetPeriod) = await LoadData(wInputFolderPath);
+                if (this.IsDisposed || this.Disposing) return;
+
+                FLblStatus.Text = "データ集計中...";
+
+                FDgvAggregatedSales.DataSource = await Task.Run(() => GenerateAggregatedData());
+
+                FLblStatus.Text = "集計完了";
+                FBtnExport.Enabled = true;
+
+                FLblInputFolderPath.Text = wInputFolderPath;
+                FLblTargetFileName.Text = wSalesFileName;
+                FLblSelectedPeriod.Text = wTargetPeriod;
+            } catch (Exception ex) {
+                MessageBox.Show(this, $"データの読み込みまたは集計に失敗しました：{ex.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FLblStatus.Text = "エラー発生";
+            } finally {
+                FBtnRefresh.Enabled = true;
+            }
+        }
+
+        private async Task<(string FFileName, string FPeriod)> LoadData(string vFolderPath) {
             if (!Directory.Exists(vFolderPath)) {
                 throw new DirectoryNotFoundException($"入力フォルダが見つかりません。\n以下の場所に「{C_InputFolderName}」フォルダを作成し、csvファイルを配置してください。\n{vFolderPath}");
             }
-
-            await DataManager.LoadAll(vFolderPath);
+            return await DataManager.LoadAll(vFolderPath);
         }
 
         private List<AggregatedSalesModel> GenerateAggregatedData() {
@@ -35,55 +63,16 @@ namespace SalesManager {
             return wAggregator.Aggregate(DataManager.Sales, DataManager.Products, DataManager.Inventories);
         }
 
-
-        #endregion
-
-        #region イベントハンドラ
-
-        private void MainForm_Load(object sender, EventArgs e) => FBtnRefresh_Click(sender, e);
-        private async void FBtnRefresh_Click(object sender, EventArgs e) {
+        private void ExportData() {
             try {
-                FBtnExport.Enabled = false;
-                FLblStatus.Text = "データ読み込み中...";
-
-                var wInputFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, C_InputFolderName);
-
-                await LoadData(wInputFolderPath);
-                if (this.IsDisposed || this.Disposing) return;
-                FLblStatus.Text = "データ集計中...";
-
-                var wResultList = GenerateAggregatedData();
-
-                var wBindingList = new BindingList<AggregatedSalesModel>(wResultList);
-
-                FLblInputFolderPath.Text = wInputFolderPath;
-                FLblTargetFileName.Text = DataManager.ReadSalesFileName;
-                FLblSelectedPeriod.Text = DataManager.ReadSalesTargetPeriod;
-
-
-                FDgvAggregatedSales.DataSource = wBindingList;
-
-
-                FLblStatus.Text = "集計完了";
-            } catch (Exception ex) {
-                MessageBox.Show(this, $"データの読み込みまたは集計に失敗しました：{ex.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                FLblStatus.Text = "エラー発生";
-            }
-
-            FBtnExport.Enabled = true;
-        }
-        private void FBtnExport_Click(object sender, EventArgs e) {
-            try {
-                if (!(FDgvAggregatedSales.DataSource is BindingList<AggregatedSalesModel> wBindingList) || wBindingList.Count == 0) {
+                if (!(FDgvAggregatedSales.DataSource is List<AggregatedSalesModel> wResultList) || !wResultList.Any()) {
                     MessageBox.Show(this, "エクスポートするデータがありません。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-
                 var wOutputFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Output");
                 if (!Directory.Exists(wOutputFolderPath)) Directory.CreateDirectory(wOutputFolderPath);
 
-                var wResultList = new List<AggregatedSalesModel>(wBindingList);
-                var wPeriodStirng = string.IsNullOrEmpty(DataManager.ReadSalesTargetPeriod) ? "UnknownPeriod" : DataManager.ReadSalesTargetPeriod.Replace("/", "-");
+                var wPeriodStirng = string.IsNullOrEmpty(FLblSelectedPeriod.Text) ? "UnknownPeriod" : FLblSelectedPeriod.Text;
 
                 DataExporter.Export(wResultList, wPeriodStirng, wOutputFolderPath);
 
@@ -94,5 +83,16 @@ namespace SalesManager {
         }
 
         #endregion
+
+        #region イベントハンドラ
+
+        private async void MainForm_Load(object sender, EventArgs e) => await RefreshData();
+        private async void FBtnRefresh_Click(object sender, EventArgs e) => await RefreshData();
+        private void FBtnExport_Click(object sender, EventArgs e) => ExportData();
+        private async void FTsmiLoad_Click(object sender, EventArgs e) => await RefreshData();
+        private void FTsmiExport_Click(object sender, EventArgs e) => ExportData();
+
+        #endregion
+
     }
 }
