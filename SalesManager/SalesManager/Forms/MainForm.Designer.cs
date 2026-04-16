@@ -104,7 +104,7 @@
             // 
             // FGrpProcessInfo
             // 
-            this.FGrpProcessInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.FGrpProcessInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FGrpProcessInfo.Controls.Add(this.FLblTargetPeriod);
             this.FGrpProcessInfo.Controls.Add(this.FLblTargetFile);
@@ -233,8 +233,8 @@
             // 
             this.FDgvAggregatedSales.AllowUserToAddRows = false;
             this.FDgvAggregatedSales.AllowUserToDeleteRows = false;
-            this.FDgvAggregatedSales.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.FDgvAggregatedSales.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FDgvAggregatedSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.FDgvAggregatedSales.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -335,6 +335,7 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "売上管理・集計";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.FMenuStripMain.ResumeLayout(false);
             this.FMenuStripMain.PerformLayout();
             this.FGrpProcessInfo.ResumeLayout(false);

@@ -40,6 +40,7 @@ namespace SalesManager {
 
         #region イベントハンドラ
 
+        private void MainForm_Load(object sender, EventArgs e) => FBtnRefresh_Click(sender, e);
         private async void FBtnRefresh_Click(object sender, EventArgs e) {
             try {
                 FBtnExport.Enabled = false;
