@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using SalesManager.Models;
+using SalesManager.Services;
 
 namespace SalesManager.Data {
     /// <summary>
     /// 各種ファイルを読み込み、データモデルのリストとして保持するクラス
     /// </summary>
     public class DataManager {
+        #region フィールド・初期化
+
         private static readonly (string C_FilePattern, string C_DisplayName) C_StoreConfig = ("stores.csv", "店舗マスタ");
         private static readonly (string C_FilePattern, string C_DisplayName) C_ProductConfig = ("products.csv", "製品マスタ");
         private static readonly (string C_FilePattern, string C_DisplayName) C_InventoryConfig = ("inventory.csv", "在庫データ");
@@ -32,7 +35,7 @@ namespace SalesManager.Data {
         /// 商品マスタデータの初期化
         /// </summary>
         public static IReadOnlyList<ProductModel> Products { get; private set; } = new List<ProductModel>();
-        
+
         /// <summary>
         /// 在庫データの初期化
         /// </summary>
@@ -42,6 +45,25 @@ namespace SalesManager.Data {
         /// 売上データの初期化
         /// </summary>
         public static IReadOnlyList<SaleModel> Sales { get; private set; } = new List<SaleModel>();
+
+        /// <summary>
+        /// 読込んだ売上データのファイル名
+        /// </summary>
+        public static string ReadSalesFileName { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// 読込データのフォルダパス
+        /// </summary>
+        public static string ReadDataFolderPath { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// 読込んだ売上データの対象期間
+        /// </summary>
+        public static string ReadSalesTargetPeriod { get; private set; } = string.Empty;
+
+        #endregion
+
+        #region publicメソッド
 
         /// <summary>
         /// 指定されたフォルダ内の全対象ファイルを読み込み、各データモデルのリストに格納
@@ -55,12 +77,24 @@ namespace SalesManager.Data {
                 var wInventories = FetchFile<InventoryModel>(vFolderPath, C_InventoryConfig.C_FilePattern, C_InventoryConfig.C_DisplayName);
                 var wSales = FetchFile<SaleModel>(vFolderPath, C_SaleConfig.C_FilePattern, C_SaleConfig.C_DisplayName);
 
+                var wSalesFiles = Directory.GetFiles(vFolderPath, C_SaleConfig.C_FilePattern);
+                var wStartDate = SalesValidator.ParseStartDate(wSalesFiles.Single());
+                SalesValidator.EnsureWithinRange(wSales, wStartDate);
+
+                ReadSalesFileName = Path.GetFileName(wSalesFiles.Single());
+                ReadDataFolderPath = vFolderPath;
+                ReadSalesTargetPeriod = $"{wStartDate:yyyy/MM/dd}_{(wStartDate.AddDays(SalesValidator.C_TargetPeriodDays - 1)):yyyy/MM/dd}";
+
                 Stores = wStores;
                 Products = wProducts;
                 Inventories = wInventories;
                 Sales = wSales;
             });
         }
+
+        #endregion
+
+        #region privateメソッド
 
         private static List<T> FetchFile<T>(string vFolderPath, string vFilePattern, string vDisplayName) {
             try {
@@ -99,5 +133,7 @@ namespace SalesManager.Data {
                 return wCsv.GetRecords<T>().ToList();
             }
         }
+
+        #endregion
     }
 }
