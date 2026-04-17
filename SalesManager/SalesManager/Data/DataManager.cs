@@ -55,7 +55,7 @@ namespace SalesManager.Data {
         /// </summary>
         /// <param name="vFolderPath">対象ファイルが配置されているフォルダパス</param>
         /// <returns>非同期タスク</returns>
-        public static async Task<(string FFileName, string FPeriod)> LoadAll(string vFolderPath) {
+        public static async Task<(string FFileName, string FDisplayPeriod,string FSystemPeriod)> LoadAll(string vFolderPath) {
             return await Task.Run(() => {
                 var wStoreFilePath = GetFilePath(vFolderPath, C_StoreConfig.C_FilePattern, C_StoreConfig.C_DisplayName);
                 var wProductFilePath = GetFilePath(vFolderPath, C_ProductConfig.C_FilePattern, C_ProductConfig.C_DisplayName);
@@ -64,7 +64,9 @@ namespace SalesManager.Data {
 
                 var wSalesFileName = Path.GetFileName(wSaleFilePath);
                 var wStartDate = SalesValidator.ParseStartDate(wSalesFileName);
-                var wTargetPeriod = $"{wStartDate:yyyyMMdd}_{(wStartDate.AddDays(SalesValidator.C_TargetPeriodDays - 1)):yyyyMMdd}";
+                var wEndDate = wStartDate.AddDays(SalesValidator.C_TargetPeriodDays - 1);
+                var wDisplayPeriod = $"{wStartDate:yyyy/MM/dd}_{wEndDate:yyyy/MM/dd}";
+                var wSystemPeriod = $"{wStartDate:yyyyMMdd}_{wEndDate:yyyyMMdd}";
 
                 var wStore = ReadCsv<StoreModel>(wStoreFilePath, C_StoreConfig.C_DisplayName);
                 var wProduct = ReadCsv<ProductModel>(wProductFilePath, C_ProductConfig.C_DisplayName);
@@ -78,7 +80,7 @@ namespace SalesManager.Data {
                 Inventories = wInventories;
                 Sales = wSales;
 
-                return (FFileName: wSalesFileName, FPeriod: wTargetPeriod);
+                return (FFileName: wSalesFileName, FDisplayPeriod: wDisplayPeriod, FSystemPeriod: wSystemPeriod);
             });
         }
 

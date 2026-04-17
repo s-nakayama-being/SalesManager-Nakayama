@@ -14,43 +14,29 @@ namespace SalesManager.Data {
     public static class DataExporter {
         #region publicメソッド
 
-        /// <summary>
-        /// 集計結果および発注候補リストを指定されたフォルダにファイル出力
-        /// </summary>
-        /// <param name="vResultList">集計結果のリスト</param>
-        /// <param name="vPeriodString">対象期間</param>
-        /// <param name="vOutputFolderPath">出力先のフォルダパス</param>
-        public static void Export(
-            List<AggregatedSalesModel> vResultList,
-            string vPeriodString,
-            string vOutputFolderPath) {
-
+        public static void ExportAggregatedSales(List<AggregatedSalesModel> vResultList, string vPeriodString, string vOutputFolderPath) {
             Directory.CreateDirectory(vOutputFolderPath);
 
-            ExportAggregatedSales(vResultList, vPeriodString, vOutputFolderPath);
-
-            ExportRestockList(vResultList, vPeriodString, vOutputFolderPath);
-        }
-
-        #endregion
-
-        #region privateメソッド
-
-        private static void ExportAggregatedSales(List<AggregatedSalesModel> vResultList, string vPeriodString, string vOutputFolderPath) {
             var wFilePath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vPeriodString}.csv");
 
             WriteCsv(wFilePath, vResultList);
         }
 
-        private static void ExportRestockList(List<AggregatedSalesModel> vResultList, string vPeriodString, string vOutputFolderPath) {
+        public static void ExportRestockList(List<AggregatedSalesModel> vResultList, string vPeriodString, string vOutputFolderPath) {
             var wRestockList = vResultList.Where(x => x.IsRestockNeeded).ToList();
 
             if (!wRestockList.Any()) return;
+
+            Directory.CreateDirectory(vOutputFolderPath);
 
             var wFilePath = Path.Combine(vOutputFolderPath, $"RestockList_{vPeriodString}.csv");
 
             WriteCsv(wFilePath, wRestockList);
         }
+
+        #endregion
+
+        #region privateメソッド
 
         private static void WriteCsv<T>(string vFilePath, List<T> vData) {
             var wConfig = new CsvConfiguration(CultureInfo.InvariantCulture) {
