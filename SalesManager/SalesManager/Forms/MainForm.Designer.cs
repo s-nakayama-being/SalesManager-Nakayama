@@ -16,6 +16,7 @@
         private System.Windows.Forms.Label FLblStatus;
         private System.Windows.Forms.Button FBtnRefresh;
         private System.Windows.Forms.Button FBtnExportAggregatedSales;
+        private System.Windows.Forms.Button FBtnExportRestock;
         private System.Windows.Forms.Panel FPnlBottom;
         private System.Windows.Forms.DataGridView FDgvAggregatedSales;
         private System.Windows.Forms.DataGridViewTextBoxColumn FColProductId;
@@ -27,6 +28,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn FColTotalSalesAmount;
         private System.Windows.Forms.ToolStripMenuItem FTsmiRefresh;
         private System.Windows.Forms.ToolStripMenuItem FTsmiExportAggregatedSales;
+        private System.Windows.Forms.ToolStripMenuItem FTsmiExportRestock;
+
 
         /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
@@ -396,9 +399,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button FBtnExportRestock;
-        private System.Windows.Forms.ToolStripMenuItem FTsmiExportRestock;
-    }
+            }
 }
 

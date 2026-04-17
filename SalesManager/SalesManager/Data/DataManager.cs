@@ -27,22 +27,22 @@ namespace SalesManager.Data {
         };
 
         /// <summary>
-        /// 店舗マスタデータの初期化
+        /// 店舗マスタデータ
         /// </summary>
         public static IReadOnlyList<StoreModel> Stores { get; private set; } = new List<StoreModel>();
 
         /// <summary>
-        /// 商品マスタデータの初期化
+        /// 商品マスタデータ
         /// </summary>
         public static IReadOnlyList<ProductModel> Products { get; private set; } = new List<ProductModel>();
 
         /// <summary>
-        /// 在庫データの初期化
+        /// 在庫データ
         /// </summary>
         public static IReadOnlyList<InventoryModel> Inventories { get; private set; } = new List<InventoryModel>();
 
         /// <summary>
-        /// 売上データの初期化
+        /// 売上データ
         /// </summary>
         public static IReadOnlyList<SaleModel> Sales { get; private set; } = new List<SaleModel>();
 
@@ -51,10 +51,10 @@ namespace SalesManager.Data {
         #region publicメソッド
 
         /// <summary>
-        /// 指定されたフォルダ内の全対象ファイルを読み込み、各データモデルのリストに格納
+        /// 指定されたフォルダから必要なファイルを読み込み、データモデルのリストを初期化
         /// </summary>
-        /// <param name="vFolderPath">対象ファイルが配置されているフォルダパス</param>
-        /// <returns>非同期タスク</returns>
+        /// <param name="vFolderPath">対象フォルダのパス</param>
+        /// <returns>売上データのファイル名、表示用期間、システム用期間</returns>
         public static async Task<(string FFileName, string FDisplayPeriod,string FSystemPeriod)> LoadAll(string vFolderPath) {
             return await Task.Run(() => {
                 var wStoreFilePath = GetFilePath(vFolderPath, C_StoreConfig.C_FilePattern, C_StoreConfig.C_DisplayName);

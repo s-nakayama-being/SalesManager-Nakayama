@@ -18,10 +18,13 @@ namespace SalesManager {
         private static readonly string C_ReportSalesName = "週次報告書";
         private static readonly string C_ReportRestockName = "発注候補リスト";
 
+        /// <summary>
+        /// フォームの初期化
+        /// </summary>
         public MainForm() {
             InitializeComponent();
 
-            typeof(DataManager).GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(FDgvAggregatedSales, true, null);
+            typeof(DataGridView).GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(FDgvAggregatedSales, true, null);
         }
 
         #endregion

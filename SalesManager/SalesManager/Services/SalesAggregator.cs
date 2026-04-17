@@ -19,7 +19,6 @@ namespace SalesManager.Services {
         /// 売上データを各種モデルと結合し、集計結果のリストを生成するメソッド
         /// </summary>
         /// <param name="vSales">売上データのリスト</param>
-        /// <param name="vStores">店舗データのリスト</param>
         /// <param name="vProducts">商品データのリスト</param>
         /// <param name="vInventories">在庫データのリスト</param>
         /// <returns>集計結果</returns>

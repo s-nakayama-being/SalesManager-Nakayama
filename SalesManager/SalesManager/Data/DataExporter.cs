@@ -14,22 +14,34 @@ namespace SalesManager.Data {
     public static class DataExporter {
         #region publicメソッド
 
-        public static void ExportAggregatedSales(List<AggregatedSalesModel> vResultList, string vPeriodString, string vOutputFolderPath) {
+        /// <summary>
+        /// 集計結果を外部ファイルとして出力
+        /// </summary>
+        /// <param name="vResultList">集計結果のリスト</param>
+        /// <param name="vTargetPeriod">対象期間</param>
+        /// <param name="vOutputFolderPath">出力先フォルダのパス</param>
+        public static void ExportAggregatedSales(List<AggregatedSalesModel> vResultList, string vTargetPeriod, string vOutputFolderPath) {
             Directory.CreateDirectory(vOutputFolderPath);
 
-            var wFilePath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vPeriodString}.csv");
+            var wFilePath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vTargetPeriod}.csv");
 
             WriteCsv(wFilePath, vResultList);
         }
 
-        public static void ExportRestockList(List<AggregatedSalesModel> vResultList, string vPeriodString, string vOutputFolderPath) {
+        /// <summary>
+        /// 在庫発注が必要な商品を抽出して外部ファイルとして出力
+        /// </summary>
+        /// <param name="vResultList">集計結果のリスト</param>
+        /// <param name="vTargetPeriod">対象期間</param>
+        /// <param name="vOutputFolderPath">出力先フォルダのパス</param>
+        public static void ExportRestockList(List<AggregatedSalesModel> vResultList, string vTargetPeriod, string vOutputFolderPath) {
             var wRestockList = vResultList.Where(x => x.IsRestockNeeded).ToList();
 
             if (!wRestockList.Any()) return;
 
             Directory.CreateDirectory(vOutputFolderPath);
 
-            var wFilePath = Path.Combine(vOutputFolderPath, $"RestockList_{vPeriodString}.csv");
+            var wFilePath = Path.Combine(vOutputFolderPath, $"RestockList_{vTargetPeriod}.csv");
 
             WriteCsv(wFilePath, wRestockList);
         }
