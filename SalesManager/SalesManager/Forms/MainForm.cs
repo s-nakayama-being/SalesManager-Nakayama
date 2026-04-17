@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SalesManager.Data;
@@ -72,9 +71,9 @@ namespace SalesManager {
                 var wOutputFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Output");
                 if (!Directory.Exists(wOutputFolderPath)) Directory.CreateDirectory(wOutputFolderPath);
 
-                var wPeriodStirng = string.IsNullOrEmpty(FLblSelectedPeriod.Text) ? "UnknownPeriod" : FLblSelectedPeriod.Text;
+                var wPeriodString = string.IsNullOrEmpty(FLblSelectedPeriod.Text) ? "UnknownPeriod" : FLblSelectedPeriod.Text;
 
-                DataExporter.Export(wResultList, wPeriodStirng, wOutputFolderPath);
+                DataExporter.Export(wResultList, wPeriodString, wOutputFolderPath);
 
                 MessageBox.Show(this, $"出力が完了しました。\n出力先：{wOutputFolderPath}", "エクスポート完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
             } catch (Exception ex) {
@@ -93,6 +92,5 @@ namespace SalesManager {
         private void FTsmiExport_Click(object sender, EventArgs e) => ExportData();
 
         #endregion
-
     }
 }

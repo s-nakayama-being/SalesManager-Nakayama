@@ -25,6 +25,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn FColRemainingInventory;
         private System.Windows.Forms.DataGridViewTextBoxColumn FColRestockStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn FColTotalSalesAmount;
+        private System.Windows.Forms.ToolStripMenuItem FTsmiLoad;
+        private System.Windows.Forms.ToolStripMenuItem FTsmiExport;
 
         /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
@@ -52,8 +54,8 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.FMenuStripMain = new System.Windows.Forms.MenuStrip();
             this.FFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.FTsmiExport = new System.Windows.Forms.ToolStripMenuItem();
             this.FTsmiLoad = new System.Windows.Forms.ToolStripMenuItem();
+            this.FTsmiExport = new System.Windows.Forms.ToolStripMenuItem();
             this.FGrpProcessInfo = new System.Windows.Forms.GroupBox();
             this.FLblTargetPeriod = new System.Windows.Forms.Label();
             this.FLblTargetFile = new System.Windows.Forms.Label();
@@ -92,29 +94,29 @@
             // FFileToolStripMenuItem
             // 
             this.FFileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FTsmiExport,
-            this.FTsmiLoad});
+            this.FTsmiLoad,
+            this.FTsmiExport});
             this.FFileToolStripMenuItem.Name = "FFileToolStripMenuItem";
             this.FFileToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.FFileToolStripMenuItem.Text = "ファイル(&F)";
-            // 
-            // FTsmiExport
-            // 
-            this.FTsmiExport.Name = "FTsmiExport";
-            this.FTsmiExport.Size = new System.Drawing.Size(180, 22);
-            this.FTsmiExport.Text = "再読込(&L)";
-            this.FTsmiExport.Click += new System.EventHandler(this.FTsmiExport_Click);
             // 
             // FTsmiLoad
             // 
             this.FTsmiLoad.Name = "FTsmiLoad";
             this.FTsmiLoad.Size = new System.Drawing.Size(180, 22);
-            this.FTsmiLoad.Text = "出力(&E)";
+            this.FTsmiLoad.Text = "再読込(&L)";
             this.FTsmiLoad.Click += new System.EventHandler(this.FTsmiLoad_Click);
+            // 
+            // FTsmiExport
+            // 
+            this.FTsmiExport.Name = "FTsmiExport";
+            this.FTsmiExport.Size = new System.Drawing.Size(180, 22);
+            this.FTsmiExport.Text = "出力(&E)";
+            this.FTsmiExport.Click += new System.EventHandler(this.FTsmiExport_Click);
             // 
             // FGrpProcessInfo
             // 
-            this.FGrpProcessInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.FGrpProcessInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FGrpProcessInfo.Controls.Add(this.FLblTargetPeriod);
             this.FGrpProcessInfo.Controls.Add(this.FLblTargetFile);
@@ -243,8 +245,8 @@
             // 
             this.FDgvAggregatedSales.AllowUserToAddRows = false;
             this.FDgvAggregatedSales.AllowUserToDeleteRows = false;
-            this.FDgvAggregatedSales.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.FDgvAggregatedSales.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FDgvAggregatedSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.FDgvAggregatedSales.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -360,8 +362,6 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStripMenuItem FTsmiExport;
-        private System.Windows.Forms.ToolStripMenuItem FTsmiLoad;
     }
 }
 
