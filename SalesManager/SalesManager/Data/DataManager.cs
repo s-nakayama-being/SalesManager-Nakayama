@@ -55,7 +55,7 @@ namespace SalesManager.Data {
         /// </summary>
         /// <param name="vFolderPath">対象フォルダのパス</param>
         /// <returns>売上データのファイル名、表示用期間、システム用期間</returns>
-        public static async Task<(string FFileName, string FDisplayPeriod,string FSystemPeriod)> LoadAll(string vFolderPath) {
+        public static async Task<(string FFileName, string FDisplayPeriod, string FSystemPeriod)> LoadAll(string vFolderPath) {
             return await Task.Run(() => {
                 var wStoreFilePath = GetFilePath(vFolderPath, C_StoreConfig.C_FilePattern, C_StoreConfig.C_DisplayName);
                 var wProductFilePath = GetFilePath(vFolderPath, C_ProductConfig.C_FilePattern, C_ProductConfig.C_DisplayName);
