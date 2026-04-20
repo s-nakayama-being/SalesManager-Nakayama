@@ -12,28 +12,43 @@ namespace SalesManager.Data {
     /// 集計結果等のデータを外部ファイルとして出力するクラス
     /// </summary>
     public static class DataExporter {
+        #region publicメソッド
+
         /// <summary>
-        /// 集計結果および発注候補リストを指定されたフォルダにファイル出力
+        /// 集計結果を外部ファイルとして出力
         /// </summary>
         /// <param name="vResultList">集計結果のリスト</param>
-        /// <param name="vPeriodString">対象期間</param>
-        /// <param name="vOutputFolderPath">出力先のフォルダパス</param>
-        public static void Export(
-            List<AggregatedSalesModel> vResultList,
-            string vPeriodString,
-            string vOutputFolderPath) {
+        /// <param name="vTargetPeriod">対象期間</param>
+        /// <param name="vOutputFolderPath">出力先フォルダのパス</param>
+        public static void ExportAggregatedSales(List<AggregatedSalesModel> vResultList, string vTargetPeriod, string vOutputFolderPath) {
+            Directory.CreateDirectory(vOutputFolderPath);
+
+            var wFilePath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vTargetPeriod}.csv");
+
+            WriteCsv(wFilePath, vResultList);
+        }
+
+        /// <summary>
+        /// 在庫発注が必要な商品を抽出して外部ファイルとして出力
+        /// </summary>
+        /// <param name="vResultList">集計結果のリスト</param>
+        /// <param name="vTargetPeriod">対象期間</param>
+        /// <param name="vOutputFolderPath">出力先フォルダのパス</param>
+        public static void ExportRestockList(List<AggregatedSalesModel> vResultList, string vTargetPeriod, string vOutputFolderPath) {
+            var wRestockList = vResultList.Where(x => x.IsRestockNeeded).ToList();
+
+            if (!wRestockList.Any()) return;
 
             Directory.CreateDirectory(vOutputFolderPath);
 
-            var wAggregatedSalesPath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vPeriodString}.csv");
-            WriteCsv(wAggregatedSalesPath, vResultList);
+            var wFilePath = Path.Combine(vOutputFolderPath, $"RestockList_{vTargetPeriod}.csv");
 
-            var wRestockList = vResultList.Where(x => x.IsRestockNeeded).ToList();
-            if (wRestockList.Any()) {
-                var wRestockListPath = Path.Combine(vOutputFolderPath, $"RestockList_{vPeriodString}.csv");
-                WriteCsv(wRestockListPath, wRestockList);
-            }
+            WriteCsv(wFilePath, wRestockList);
         }
+
+        #endregion
+
+        #region privateメソッド
 
         private static void WriteCsv<T>(string vFilePath, List<T> vData) {
             var wConfig = new CsvConfiguration(CultureInfo.InvariantCulture) {
@@ -45,5 +60,7 @@ namespace SalesManager.Data {
                 wCsv.WriteRecords(vData);
             }
         }
+
+        #endregion
     }
 }
