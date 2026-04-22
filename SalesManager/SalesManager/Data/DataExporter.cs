@@ -76,11 +76,12 @@ namespace SalesManager.Data {
 
             var wAmountIdx = wProps.FindIndex(x => x.Name == nameof(AggregatedSalesModel.TotalSalesAmount));
 
-            if (wAmountIdx <= 0) return;
+            if (wAmountIdx == -1) throw new InvalidOperationException($"{nameof(AggregatedSalesModel.TotalSalesAmount)}列が見つかりませんでした。");
 
             var wFooter = new string[wProps.Count];
             wFooter[wAmountIdx] = vData.Sum(x => x.TotalSalesAmount).ToString(CultureInfo.InvariantCulture);
-            wFooter[wAmountIdx - 1] = C_FooterLabel;
+
+            if (wAmountIdx > 0) wFooter[wAmountIdx - 1] = C_FooterLabel;
 
             var wConfig = new CsvConfiguration(CultureInfo.InvariantCulture) {
                 HasHeaderRecord = false

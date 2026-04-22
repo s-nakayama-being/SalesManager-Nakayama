@@ -51,12 +51,12 @@
         /// コード エディターで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             this.FMenuStripMain = new System.Windows.Forms.MenuStrip();
             this.FFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FTsmiRefresh = new System.Windows.Forms.ToolStripMenuItem();
@@ -133,7 +133,7 @@
             // 
             // FGrpProcessInfo
             // 
-            this.FGrpProcessInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.FGrpProcessInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FGrpProcessInfo.Controls.Add(this.FLblTargetPeriod);
             this.FGrpProcessInfo.Controls.Add(this.FLblTargetFile);
@@ -287,8 +287,8 @@
             // 
             this.FDgvAggregatedSales.AllowUserToAddRows = false;
             this.FDgvAggregatedSales.AllowUserToDeleteRows = false;
-            this.FDgvAggregatedSales.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.FDgvAggregatedSales.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FDgvAggregatedSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.FDgvAggregatedSales.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -310,8 +310,8 @@
             // FColProductId
             // 
             this.FColProductId.DataPropertyName = "ProductId";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.FColProductId.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.FColProductId.DefaultCellStyle = dataGridViewCellStyle13;
             this.FColProductId.HeaderText = "商品ID";
             this.FColProductId.Name = "FColProductId";
             this.FColProductId.ReadOnly = true;
@@ -319,8 +319,8 @@
             // FColProductName
             // 
             this.FColProductName.DataPropertyName = "ProductName";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.FColProductName.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.FColProductName.DefaultCellStyle = dataGridViewCellStyle14;
             this.FColProductName.HeaderText = "商品名";
             this.FColProductName.Name = "FColProductName";
             this.FColProductName.ReadOnly = true;
@@ -328,10 +328,10 @@
             // FColTotalSalesQuantity
             // 
             this.FColTotalSalesQuantity.DataPropertyName = "TotalSoldQuantity";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle3.Format = "N0";
-            dataGridViewCellStyle3.NullValue = null;
-            this.FColTotalSalesQuantity.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle15.Format = "N0";
+            dataGridViewCellStyle15.NullValue = null;
+            this.FColTotalSalesQuantity.DefaultCellStyle = dataGridViewCellStyle15;
             this.FColTotalSalesQuantity.HeaderText = "合計販売数";
             this.FColTotalSalesQuantity.Name = "FColTotalSalesQuantity";
             this.FColTotalSalesQuantity.ReadOnly = true;
@@ -339,10 +339,10 @@
             // FColCurrentInventory
             // 
             this.FColCurrentInventory.DataPropertyName = "CurrentInventory";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle4.Format = "N0";
-            dataGridViewCellStyle4.NullValue = null;
-            this.FColCurrentInventory.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle16.Format = "N0";
+            dataGridViewCellStyle16.NullValue = null;
+            this.FColCurrentInventory.DefaultCellStyle = dataGridViewCellStyle16;
             this.FColCurrentInventory.HeaderText = "現在在庫数";
             this.FColCurrentInventory.Name = "FColCurrentInventory";
             this.FColCurrentInventory.ReadOnly = true;
@@ -350,10 +350,10 @@
             // FColRemainingInventory
             // 
             this.FColRemainingInventory.DataPropertyName = "RemainingInventory";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle5.Format = "N0";
-            dataGridViewCellStyle5.NullValue = null;
-            this.FColRemainingInventory.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle17.Format = "N0";
+            dataGridViewCellStyle17.NullValue = null;
+            this.FColRemainingInventory.DefaultCellStyle = dataGridViewCellStyle17;
             this.FColRemainingInventory.HeaderText = "販売後在庫";
             this.FColRemainingInventory.Name = "FColRemainingInventory";
             this.FColRemainingInventory.ReadOnly = true;
@@ -368,10 +368,10 @@
             // FColTotalSalesAmount
             // 
             this.FColTotalSalesAmount.DataPropertyName = "TotalSalesAmount";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "C0";
-            dataGridViewCellStyle6.NullValue = null;
-            this.FColTotalSalesAmount.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle18.Format = "C0";
+            dataGridViewCellStyle18.NullValue = null;
+            this.FColTotalSalesAmount.DefaultCellStyle = dataGridViewCellStyle18;
             this.FColTotalSalesAmount.HeaderText = "合計売上金額";
             this.FColTotalSalesAmount.Name = "FColTotalSalesAmount";
             this.FColTotalSalesAmount.ReadOnly = true;
@@ -384,6 +384,7 @@
             this.FLblGrandTotalAmount.Name = "FLblGrandTotalAmount";
             this.FLblGrandTotalAmount.Size = new System.Drawing.Size(120, 12);
             this.FLblGrandTotalAmount.TabIndex = 5;
+            this.FLblGrandTotalAmount.Text = "\\0";
             this.FLblGrandTotalAmount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FLblGrandTotal
