@@ -44,7 +44,11 @@ namespace SalesManager {
 
                 FLblStatus.Text = "データ集計中...";
 
-                FDgvAggregatedSales.DataSource = await Task.Run(() => GenerateAggregatedData());
+                var wResultList = await Task.Run(() => GenerateAggregatedData());
+                FDgvAggregatedSales.DataSource = wResultList;
+
+                var wGrandTotal = wResultList.Sum(x => x.TotalSalesAmount);
+                FLblGrandTotalAmount.Text = wGrandTotal.ToString("C0");
 
                 FLblStatus.Text = "集計完了";
                 FBtnExportAggregatedSales.Enabled = true;

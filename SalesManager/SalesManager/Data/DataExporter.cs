@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,12 @@ namespace SalesManager.Data {
     /// 集計結果等のデータを外部ファイルとして出力するクラス
     /// </summary>
     public static class DataExporter {
+        #region フィールド
+
+        private static readonly string C_FooterLabel = "Sum";
+
+        #endregion
+
         #region publicメソッド
 
         /// <summary>
@@ -26,6 +33,8 @@ namespace SalesManager.Data {
             var wFilePath = Path.Combine(vOutputFolderPath, $"AggregatedSales_{vTargetPeriod}.csv");
 
             WriteCsv(wFilePath, vResultList);
+
+            AppendFooter(wFilePath, vResultList);
         }
 
         /// <summary>
@@ -58,6 +67,30 @@ namespace SalesManager.Data {
             using (var wWriter = new StreamWriter(vFilePath, false, new UTF8Encoding(true)))
             using (var wCsv = new CsvWriter(wWriter, wConfig)) {
                 wCsv.WriteRecords(vData);
+            }
+        }
+
+        private static void AppendFooter(string vFilePath, List<AggregatedSalesModel> vData) {
+            var wProps = typeof(AggregatedSalesModel).GetProperties()
+                .Where(x => !Attribute.IsDefined(x, typeof(CsvHelper.Configuration.Attributes.IgnoreAttribute))).ToList();
+
+            var wAmountIdx = wProps.FindIndex(x => x.Name == nameof(AggregatedSalesModel.TotalSalesAmount));
+
+            if (wAmountIdx == -1) throw new InvalidOperationException($"{nameof(AggregatedSalesModel.TotalSalesAmount)}列が見つかりませんでした。");
+
+            var wFooter = new string[wProps.Count];
+            wFooter[wAmountIdx] = vData.Sum(x => x.TotalSalesAmount).ToString(CultureInfo.InvariantCulture);
+
+            if (wAmountIdx > 0) wFooter[wAmountIdx - 1] = C_FooterLabel;
+
+            var wConfig = new CsvConfiguration(CultureInfo.InvariantCulture) {
+                HasHeaderRecord = false
+            };
+
+            using (var wWriter = new StreamWriter(vFilePath, true, new UTF8Encoding(true)))
+            using (var wCsv = new CsvWriter(wWriter, wConfig)) {
+                foreach (var wValue in wFooter) wCsv.WriteField(wValue);
+                wCsv.NextRecord();
             }
         }
 
